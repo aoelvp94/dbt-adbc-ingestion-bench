@@ -60,6 +60,9 @@ def main() -> None:
     ap.add_argument("--no-memory", action="store_true", help="skip the tracemalloc round")
     ap.add_argument("--out", default="")
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--skip", action="append", default=[], metavar="LOADER@SIZE",
+                    help="do not run LOADER at SIZE on any target (recorded as skipped_by_decision), "
+                         "e.g. --skip dbt_seed@10m")
     ap.add_argument("--prior", action="append", default=[],
                     help="earlier run JSON whose medians seed the timeout projection (resume a run)")
     args = ap.parse_args()
@@ -101,6 +104,12 @@ def main() -> None:
             active = []
             for name in names:
                 key = (target, name)
+                if f"{name}@{size}" in args.skip:
+                    doc["results"].append({"target": target, "loader": name, "size": size,
+                                           "status": "skipped_by_decision",
+                                           "note": f"excluded with --skip {name}@{size} to bound total runtime"})
+                    print(f"[{size} {target}] skip {name}: --skip", flush=True)
+                    continue
                 if key in dead:
                     doc["results"].append({"target": target, "loader": name, "size": size, "status": "skipped_after_timeout"})
                     continue
