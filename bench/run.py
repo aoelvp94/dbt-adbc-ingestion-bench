@@ -60,6 +60,8 @@ def main() -> None:
     ap.add_argument("--no-memory", action="store_true", help="skip the tracemalloc round")
     ap.add_argument("--out", default="")
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--prior", action="append", default=[],
+                    help="earlier run JSON whose medians seed the timeout projection (resume a run)")
     args = ap.parse_args()
 
     sizes = sorted((size_label(s) for s in args.sizes.split(",")), key=SIZES.get)
@@ -83,6 +85,14 @@ def main() -> None:
         out.write_text(json.dumps(doc, indent=2) + "\n")
 
     last_median: dict[tuple[str, str], tuple[str, float]] = {}
+    for prior in args.prior:
+        walls_by: dict[tuple[str, str, str], list[float]] = {}
+        for r in json.loads(Path(prior).read_text())["results"]:
+            if r["status"] == "ok" and r.get("round") != "memory":
+                walls_by.setdefault((r["target"], r["loader"], r["size"]), []).append(r["wall_s"])
+        for (t, name, size), w in sorted(walls_by.items(), key=lambda kv: SIZES[kv[0][2]]):
+            last_median[(t, name)] = (size, statistics.median(w))
+    doc["config"]["prior_medians"] = {f"{t}/{n}": v for (t, n), v in last_median.items()}
     dead: set[tuple[str, str]] = set()
     for size in sizes:
         generate(size)
