@@ -1,0 +1,30 @@
+[project]
+name = "dbt-adbc-ingestion-bench"
+version = "0.1.0"
+description = "How should raw data reach the warehouse before dbt? dbt seed vs DB-API executemany vs COPY/native vs ADBC bulk ingest, measured on DuckDB and Postgres."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { text = "Apache-2.0" }
+# Exact pins so a reviewer measures the same stack. Bump deliberately.
+dependencies = [
+    "dbt-core==1.12.6",
+    "dbt-duckdb==1.11.1",
+    "dbt-postgres==1.11.0",
+    "duckdb==2.0.0",
+    "pyarrow==26.0.1",
+    "numpy",
+    "psycopg[binary]==3.3.8",
+    "adbc-driver-manager==1.13.0",
+    "adbc-driver-postgresql==1.13.0",
+    "psutil==7.2.2",
+]
+
+[dependency-groups]
+dev = ["pytest==9.2.0"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

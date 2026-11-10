@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+work/
+results/runs/
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/
+dbt_project/seeds/*.csv
+dbt_project/.user.yml
+logs/
+.env
