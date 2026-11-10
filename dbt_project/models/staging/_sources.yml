@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Raw tables loaded by one of the load paths in bench/loaders.py.
+    tables:
+      - name: raw_customers
+        columns:
+          - name: customer_id
+            data_tests: [unique, not_null]
+      - name: raw_orders
+        columns:
+          - name: order_id
+            data_tests: [unique, not_null]
