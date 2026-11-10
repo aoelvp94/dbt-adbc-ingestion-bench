@@ -1,0 +1,1279 @@
+{
+  "started": "2026-11-10T10:54:59+04:00",
+  "config": {
+    "sizes": "100k",
+    "targets": "duckdb,postgres",
+    "loaders": "",
+    "rounds": 3,
+    "timeout": 600.0,
+    "no_memory": false,
+    "out": "results/runs/bench.json",
+    "seed": 7
+  },
+  "env_before": {
+    "python": "3.12.15",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.41",
+    "cpu": "Intel(R) Xeon(R) Processor",
+    "cpu_count": 8,
+    "ram_bytes": 16779689984,
+    "loadavg_1_5_15": [
+      3.11376953125,
+      3.296875,
+      3.09814453125
+    ],
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2) {'shared_buffers': '512MB', 'max_wal_size': '4GB', 'synchronous_commit': 'on', 'fsync': 'on'}",
+    "packages": {
+      "dbt-core": "1.12.6",
+      "dbt-duckdb": "1.11.1",
+      "dbt-postgres": "1.11.0",
+      "dbt-adapters": "1.24.5",
+      "duckdb": "2.0.0",
+      "pyarrow": "26.0.1",
+      "numpy": "2.5.4",
+      "psycopg": "3.3.8",
+      "psycopg2-binary": "2.9.13",
+      "adbc-driver-manager": "1.13.0",
+      "adbc-driver-postgresql": "1.13.0",
+      "agate": "1.9.1"
+    },
+    "git_commit": "c88802a"
+  },
+  "loaders": {
+    "postgres/dbt_seed": {
+      "family": "seed",
+      "input": "csv",
+      "description": "dbt seed (agate + batched INSERT)"
+    },
+    "postgres/psycopg_executemany": {
+      "family": "classic",
+      "input": "parquet",
+      "description": "psycopg3 cursor.executemany, 128k-row batches"
+    },
+    "postgres/psycopg_copy_csv": {
+      "family": "expert",
+      "input": "csv",
+      "description": "psycopg3 COPY FROM STDIN (CSV), the expert classic baseline"
+    },
+    "postgres/adbc_parquet": {
+      "family": "adbc",
+      "input": "parquet",
+      "description": "pq.read_table -> adbc_ingest (adbc-driver-postgresql)"
+    },
+    "postgres/adbc_parquet_stream": {
+      "family": "adbc",
+      "input": "parquet",
+      "description": "Parquet RecordBatchReader -> adbc_ingest (streaming)"
+    },
+    "postgres/adbc_csv_stream": {
+      "family": "adbc",
+      "input": "csv",
+      "description": "pyarrow.csv streaming reader -> adbc_ingest"
+    },
+    "duckdb/dbt_seed": {
+      "family": "seed",
+      "input": "csv",
+      "description": "dbt seed (dbt-duckdb)"
+    },
+    "duckdb/dbapi_executemany": {
+      "family": "classic",
+      "input": "parquet",
+      "description": "duckdb DB-API executemany, 128k-row batches"
+    },
+    "duckdb/duckdb_read_csv": {
+      "family": "expert",
+      "input": "csv",
+      "description": "INSERT ... SELECT FROM read_csv (DuckDB native)"
+    },
+    "duckdb/duckdb_read_parquet": {
+      "family": "expert",
+      "input": "parquet",
+      "description": "INSERT ... SELECT FROM read_parquet (DuckDB native)"
+    },
+    "duckdb/duckdb_arrow_scan": {
+      "family": "expert",
+      "input": "parquet",
+      "description": "pq.read_table -> DuckDB Arrow replacement scan"
+    },
+    "duckdb/adbc_parquet": {
+      "family": "adbc",
+      "input": "parquet",
+      "description": "pq.read_table -> adbc_ingest (adbc_driver_duckdb)"
+    },
+    "duckdb/adbc_parquet_stream": {
+      "family": "adbc",
+      "input": "parquet",
+      "description": "Parquet RecordBatchReader -> adbc_ingest (streaming)"
+    },
+    "duckdb/adbc_csv_stream": {
+      "family": "adbc",
+      "input": "csv",
+      "description": "pyarrow.csv streaming reader -> adbc_ingest"
+    }
+  },
+  "results": [
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.13530368099964107,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 776032.1021885468,
+      "rss_before_bytes": 181956608,
+      "peak_rss_bytes": 286044160,
+      "peak_rss_delta_bytes": 104087552,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbapi_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 127.11732217400004,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 826.0085895789598,
+      "rss_before_bytes": 182116352,
+      "peak_rss_bytes": 308523008,
+      "peak_rss_delta_bytes": 126406656,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.15935479599920654,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 658907.0591921364,
+      "rss_before_bytes": 182116352,
+      "peak_rss_bytes": 210059264,
+      "peak_rss_delta_bytes": 27942912,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.12675287300044147,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 828383.5901663096,
+      "rss_before_bytes": 182140928,
+      "peak_rss_bytes": 285601792,
+      "peak_rss_delta_bytes": 103460864,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 2.7426041310000073,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 38284.78153779887,
+      "rss_before_bytes": 257007616,
+      "peak_rss_bytes": 396955648,
+      "peak_rss_delta_bytes": 139948032,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.16973849999976665,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 618598.6090376924,
+      "rss_before_bytes": 182038528,
+      "peak_rss_bytes": 266248192,
+      "peak_rss_delta_bytes": 84209664,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_arrow_scan",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.11278863600000477,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 930944.8515717094,
+      "rss_before_bytes": 182194176,
+      "peak_rss_bytes": 275824640,
+      "peak_rss_delta_bytes": 93630464,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_parquet",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.1262125620005463,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 831929.8676430124,
+      "rss_before_bytes": 182083584,
+      "peak_rss_bytes": 218480640,
+      "peak_rss_delta_bytes": 36397056,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.18470126899956085,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 568485.5365029986,
+      "rss_before_bytes": 182050816,
+      "peak_rss_bytes": 217059328,
+      "peak_rss_delta_bytes": 35008512,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_arrow_scan",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.12356690199976583,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 849742.1097455287,
+      "rss_before_bytes": 182235136,
+      "peak_rss_bytes": 273145856,
+      "peak_rss_delta_bytes": 90910720,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_parquet",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.10854698099956295,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 967323.0801363584,
+      "rss_before_bytes": 182267904,
+      "peak_rss_bytes": 219840512,
+      "peak_rss_delta_bytes": 37572608,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.1565208120000534,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 670837.3069260857,
+      "rss_before_bytes": 182091776,
+      "peak_rss_bytes": 266588160,
+      "peak_rss_delta_bytes": 84496384,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.13174343699938618,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 797003.6488458186,
+      "rss_before_bytes": 181874688,
+      "peak_rss_bytes": 281882624,
+      "peak_rss_delta_bytes": 100007936,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 1.8272398780000003,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 57463.719604744736,
+      "rss_before_bytes": 256987136,
+      "peak_rss_bytes": 387956736,
+      "peak_rss_delta_bytes": 130969600,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbapi_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 123.41201563300001,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 850.8085656120124,
+      "rss_before_bytes": 182046720,
+      "peak_rss_bytes": 310349824,
+      "peak_rss_delta_bytes": 128303104,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.13814033300059236,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 760096.6185563614,
+      "rss_before_bytes": 182190080,
+      "peak_rss_bytes": 284741632,
+      "peak_rss_delta_bytes": 102551552,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbapi_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 124.95417102099964,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 840.308083692171,
+      "rss_before_bytes": 182026240,
+      "peak_rss_bytes": 312700928,
+      "peak_rss_delta_bytes": 130674688,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_parquet",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.12291200299932825,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 854269.7005806166,
+      "rss_before_bytes": 181927936,
+      "peak_rss_bytes": 215089152,
+      "peak_rss_delta_bytes": 33161216,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.11835894400064717,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 887131.9433149545,
+      "rss_before_bytes": 182161408,
+      "peak_rss_bytes": 290119680,
+      "peak_rss_delta_bytes": 107958272,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.18622432600022876,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 563836.1123662814,
+      "rss_before_bytes": 181915648,
+      "peak_rss_bytes": 212185088,
+      "peak_rss_delta_bytes": 30269440,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.19564140300008148,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 536696.2125085366,
+      "rss_before_bytes": 182034432,
+      "peak_rss_bytes": 266719232,
+      "peak_rss_delta_bytes": 84684800,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 1.6874602079997203,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 62223.689484485556,
+      "rss_before_bytes": 256991232,
+      "peak_rss_bytes": 386920448,
+      "peak_rss_delta_bytes": 129929216,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_arrow_scan",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.14529113999924448,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 722686.8754732463,
+      "rss_before_bytes": 182222848,
+      "peak_rss_bytes": 282828800,
+      "peak_rss_delta_bytes": 100605952,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.12137497899948357,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 865087.6882989759,
+      "rss_before_bytes": 182210560,
+      "peak_rss_bytes": 276226048,
+      "peak_rss_delta_bytes": 94015488,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "tracemalloc_peak_bytes": 105413482,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 7.323218884999733,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 14337.957344832774,
+      "rss_before_bytes": 256892928,
+      "peak_rss_bytes": 531451904,
+      "peak_rss_delta_bytes": 274558976,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 36306566,
+      "arrow_pool_max_bytes": 13757120,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "dbapi_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 130.90746359700006,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 802.0933040398945,
+      "rss_before_bytes": 182304768,
+      "peak_rss_bytes": 372224000,
+      "peak_rss_delta_bytes": 189919232,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 11483,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "duckdb_read_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.21771020000051067,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 482292.51546208543,
+      "rss_before_bytes": 181968896,
+      "peak_rss_bytes": 216752128,
+      "peak_rss_delta_bytes": 34783232,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 11063,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "duckdb_read_parquet",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.11767614199925447,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 892279.4222865092,
+      "rss_before_bytes": 181936128,
+      "peak_rss_bytes": 215478272,
+      "peak_rss_delta_bytes": 33542144,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 15785,
+      "arrow_pool_max_bytes": 9597504,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "duckdb_arrow_scan",
+      "family": "expert",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.17035930900055973,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 616344.3642498867,
+      "rss_before_bytes": 182059008,
+      "peak_rss_bytes": 279019520,
+      "peak_rss_delta_bytes": 96960512,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 16632,
+      "arrow_pool_max_bytes": 11254528,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.14014439299990045,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 749227.2630562865,
+      "rss_before_bytes": 182300672,
+      "peak_rss_bytes": 285683712,
+      "peak_rss_delta_bytes": 103383040,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 17003,
+      "arrow_pool_max_bytes": 13446016,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.15197985399936442,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 690881.0426968768,
+      "rss_before_bytes": 182087680,
+      "peak_rss_bytes": 280731648,
+      "peak_rss_delta_bytes": 98643968,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 16180,
+      "arrow_pool_max_bytes": 25147200,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.15908211500027392,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 660036.4849299319,
+      "rss_before_bytes": 182112256,
+      "peak_rss_bytes": 265605120,
+      "peak_rss_delta_bytes": 83492864,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_copy_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.11173641300047166,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 939711.5692227992,
+      "rss_before_bytes": 159821824,
+      "peak_rss_bytes": 161968128,
+      "peak_rss_delta_bytes": 2146304,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 1.1764483359993392,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 89251.68814218033,
+      "rss_before_bytes": 159854592,
+      "peak_rss_bytes": 261443584,
+      "peak_rss_delta_bytes": 101588992,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.16458302799946978,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 637975.8671127273,
+      "rss_before_bytes": 159776768,
+      "peak_rss_bytes": 246448128,
+      "peak_rss_delta_bytes": 86671360,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.20669341000029817,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 507998.7794475331,
+      "rss_before_bytes": 159780864,
+      "peak_rss_bytes": 231870464,
+      "peak_rss_delta_bytes": 72089600,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 50.44252732299992,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 2081.576906875637,
+      "rss_before_bytes": 234729472,
+      "peak_rss_bytes": 366223360,
+      "peak_rss_delta_bytes": 131493888,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.19380091600032756,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 541793.104836628,
+      "rss_before_bytes": 159776768,
+      "peak_rss_bytes": 247472128,
+      "peak_rss_delta_bytes": 87695360,
+      "status": "ok",
+      "round": 1
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.16596914299952914,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 632647.7205482582,
+      "rss_before_bytes": 159907840,
+      "peak_rss_bytes": 246312960,
+      "peak_rss_delta_bytes": 86405120,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 1.2224237970003742,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 85894.92470422502,
+      "rss_before_bytes": 159850496,
+      "peak_rss_bytes": 257302528,
+      "peak_rss_delta_bytes": 97452032,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.21073834599974361,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 498248.1925720711,
+      "rss_before_bytes": 159784960,
+      "peak_rss_bytes": 231817216,
+      "peak_rss_delta_bytes": 72032256,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.17088445799981855,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 614450.2620601781,
+      "rss_before_bytes": 159834112,
+      "peak_rss_bytes": 245239808,
+      "peak_rss_delta_bytes": 85405696,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 46.819491856999775,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 2242.6556939297902,
+      "rss_before_bytes": 234737664,
+      "peak_rss_bytes": 356425728,
+      "peak_rss_delta_bytes": 121688064,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_copy_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.11395499100035522,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 921416.4213278969,
+      "rss_before_bytes": 159956992,
+      "peak_rss_bytes": 161890304,
+      "peak_rss_delta_bytes": 1933312,
+      "status": "ok",
+      "round": 2
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.17741416100034257,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 591835.5074248964,
+      "rss_before_bytes": 159862784,
+      "peak_rss_bytes": 244350976,
+      "peak_rss_delta_bytes": 84488192,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 1.116879526000048,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 94011.93016407348,
+      "rss_before_bytes": 159924224,
+      "peak_rss_bytes": 259362816,
+      "peak_rss_delta_bytes": 99438592,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 47.60650720600006,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 2205.5808367887653,
+      "rss_before_bytes": 234651648,
+      "peak_rss_bytes": 357343232,
+      "peak_rss_delta_bytes": 122691584,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.22303380600078526,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 470780.6492780306,
+      "rss_before_bytes": 159662080,
+      "peak_rss_bytes": 232235008,
+      "peak_rss_delta_bytes": 72572928,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.17839823000031174,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 588570.8619408192,
+      "rss_before_bytes": 159928320,
+      "peak_rss_bytes": 241172480,
+      "peak_rss_delta_bytes": 81244160,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_copy_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "time",
+      "wall_s": 0.12698919600006775,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 826841.993707433,
+      "rss_before_bytes": 159768576,
+      "peak_rss_bytes": 161890304,
+      "peak_rss_delta_bytes": 2121728,
+      "status": "ok",
+      "round": 3
+    },
+    {
+      "tracemalloc_peak_bytes": 105828687,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 278.59979208999994,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 376.8847033671884,
+      "rss_before_bytes": 234811392,
+      "peak_rss_bytes": 498982912,
+      "peak_rss_delta_bytes": 264171520,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 35592061,
+      "arrow_pool_max_bytes": 13757120,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "psycopg_executemany",
+      "family": "classic",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 4.401777419000609,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 23854.00032876707,
+      "rss_before_bytes": 159907840,
+      "peak_rss_bytes": 333803520,
+      "peak_rss_delta_bytes": 173895680,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 2115289,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "psycopg_copy_csv",
+      "family": "expert",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.10863607899955241,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 966529.729045473,
+      "rss_before_bytes": 159870976,
+      "peak_rss_bytes": 162263040,
+      "peak_rss_delta_bytes": 2392064,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 49560,
+      "arrow_pool_max_bytes": 9692032,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "adbc_parquet",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.17151721099980932,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 612183.4618691225,
+      "rss_before_bytes": 159813632,
+      "peak_rss_bytes": 244723712,
+      "peak_rss_delta_bytes": 84910080,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 50240,
+      "arrow_pool_max_bytes": 13446016,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "adbc_parquet_stream",
+      "family": "adbc",
+      "input": "parquet",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.1988508679996812,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 528033.9032775473,
+      "rss_before_bytes": 159875072,
+      "peak_rss_bytes": 251731968,
+      "peak_rss_delta_bytes": 91856896,
+      "status": "ok",
+      "round": "memory"
+    },
+    {
+      "tracemalloc_peak_bytes": 49249,
+      "arrow_pool_max_bytes": 25147200,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "adbc_csv_stream",
+      "family": "adbc",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 0.18567256400001497,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 565511.6606241919,
+      "rss_before_bytes": 159809536,
+      "peak_rss_bytes": 232329216,
+      "peak_rss_delta_bytes": 72519680,
+      "status": "ok",
+      "round": "memory"
+    }
+  ],
+  "finished": null,
+  "note": "100k block of the first harness run, made at commit c88802a before local history was rewritten. That run also had loaders that were later removed from the project; their cells were deleted from this file. The load code of the loaders kept here is unchanged since then. One worker difference: run 1 pre-imported two now-removed libraries before the timer, so the absolute Peak RSS of the 100k cells is inflated by those imports; timings and the +delta column are not affected. The run was stopped during 1m; 1m and 10m come from bench-1m-10m.json."
+}
