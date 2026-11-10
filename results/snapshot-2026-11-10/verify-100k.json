@@ -1,0 +1,582 @@
+{
+  "started": "2026-11-10T12:45:16+04:00",
+  "size": "100k",
+  "env": {
+    "python": "3.12.15",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.41",
+    "cpu": "Intel(R) Xeon(R) Processor",
+    "cpu_count": 8,
+    "ram_bytes": 16779689984,
+    "loadavg_1_5_15": [
+      1.470703125,
+      2.05224609375,
+      3.50537109375
+    ],
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2) {'shared_buffers': '512MB', 'max_wal_size': '4GB', 'synchronous_commit': 'on', 'fsync': 'on'}",
+    "packages": {
+      "dbt-core": "1.12.6",
+      "dbt-duckdb": "1.11.1",
+      "dbt-postgres": "1.11.0",
+      "dbt-adapters": "1.24.5",
+      "duckdb": "2.0.0",
+      "pyarrow": "26.0.1",
+      "numpy": "2.5.4",
+      "psycopg": "3.3.8",
+      "psycopg2-binary": "2.9.13",
+      "adbc-driver-manager": "1.13.0",
+      "adbc-driver-postgresql": "1.13.0",
+      "agate": "1.9.1"
+    },
+    "git_commit": "2992b3f"
+  },
+  "runs": [
+    {
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.6228358569987904,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "dbapi_executemany",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.626576409000336,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_csv",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.6223853809988213,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_read_parquet",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.9613284610004484,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "duckdb_arrow_scan",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.6175289809998503,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.5569939739998517,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_parquet_stream",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.5712138199996843,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "duckdb",
+      "loader": "adbc_csv_stream",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 3.5464483449995896,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.6035366150008485,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_executemany",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.4374651550006092,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "psycopg_copy_csv",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.3639274049983214,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.4312315179995494,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_parquet_stream",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.3941043419999914,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    },
+    {
+      "target": "postgres",
+      "loader": "adbc_csv_stream",
+      "load_ok": true,
+      "dbt_build": {
+        "success": true,
+        "wall_s": 2.3738252010007272,
+        "statuses": {
+          "test:pass": 20,
+          "model:success": 5
+        },
+        "log_tail": null
+      },
+      "fingerprints": {
+        "raw.raw_customers": {
+          "rows": 5000,
+          "sha256": "56d85ff0e82cfac4d206f3439186c7aacb72808e1558d256228bf5412eabe307"
+        },
+        "raw.raw_orders": {
+          "rows": 100000,
+          "sha256": "d35d0cd5d873bb1da8aded5f10b1a0588768955f523d5309790ea3cfed4b4c8f"
+        },
+        "analytics.dim_customers": {
+          "rows": 5000,
+          "sha256": "9fa9282057e4c78c4f88c4cdfbba3f2764dd455d7f3b209733ed3989de4d0ee5"
+        },
+        "analytics.fct_daily_revenue": {
+          "rows": 366,
+          "sha256": "e97e16bab2f1a79be08295f082b04dcac4eb3d50ceec29eb09a7312b6a1bf8a8"
+        },
+        "analytics.fct_country_status": {
+          "rows": 60,
+          "sha256": "dc89434a2bde4762c37f95a02865bbbb281d61eaebb8e20fa25ef3e506b9edb0"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "raw.raw_customers": {
+      "distinct_hashes_per_target": {
+        "duckdb": 1,
+        "postgres": 1
+      },
+      "identical_across_loaders": true,
+      "identical_across_targets": true
+    },
+    "raw.raw_orders": {
+      "distinct_hashes_per_target": {
+        "duckdb": 1,
+        "postgres": 1
+      },
+      "identical_across_loaders": true,
+      "identical_across_targets": true
+    },
+    "analytics.dim_customers": {
+      "distinct_hashes_per_target": {
+        "duckdb": 1,
+        "postgres": 1
+      },
+      "identical_across_loaders": true,
+      "identical_across_targets": true
+    },
+    "analytics.fct_daily_revenue": {
+      "distinct_hashes_per_target": {
+        "duckdb": 1,
+        "postgres": 1
+      },
+      "identical_across_loaders": true,
+      "identical_across_targets": true
+    },
+    "analytics.fct_country_status": {
+      "distinct_hashes_per_target": {
+        "duckdb": 1,
+        "postgres": 1
+      },
+      "identical_across_loaders": true,
+      "identical_across_targets": true
+    }
+  },
+  "all_builds_passed": true,
+  "finished": "2026-11-10T12:48:58+04:00"
+}

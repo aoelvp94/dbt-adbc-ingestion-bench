@@ -1,0 +1,191 @@
+{
+  "started": "2026-11-10T12:30:48+04:00",
+  "env": {
+    "python": "3.12.15",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.41",
+    "cpu": "Intel(R) Xeon(R) Processor",
+    "cpu_count": 8,
+    "ram_bytes": 16779689984,
+    "loadavg_1_5_15": [
+      1.93798828125,
+      4.7265625,
+      5.28759765625
+    ],
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2) {'shared_buffers': '512MB', 'max_wal_size': '4GB', 'synchronous_commit': 'on', 'fsync': 'on'}",
+    "packages": {
+      "dbt-core": "1.12.6",
+      "dbt-duckdb": "1.11.1",
+      "dbt-postgres": "1.11.0",
+      "dbt-adapters": "1.24.5",
+      "duckdb": "2.0.0",
+      "pyarrow": "26.0.1",
+      "numpy": "2.5.4",
+      "psycopg": "3.3.8",
+      "psycopg2-binary": "2.9.13",
+      "adbc-driver-manager": "1.13.0",
+      "adbc-driver-postgresql": "1.13.0",
+      "agate": "1.9.1"
+    },
+    "git_commit": "2992b3f"
+  },
+  "size": "100k",
+  "results": [
+    {
+      "tracemalloc_peak_bytes": 106891011,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 7.217351649000193,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 14548.272705341366,
+      "rss_before_bytes": 211337216,
+      "peak_rss_bytes": 489738240,
+      "peak_rss_delta_bytes": 278401024,
+      "status": "ok",
+      "run": 1
+    },
+    {
+      "tracemalloc_peak_bytes": 105346119,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 6.645086657999855,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 15801.148337711007,
+      "rss_before_bytes": 212131840,
+      "peak_rss_bytes": 486473728,
+      "peak_rss_delta_bytes": 274341888,
+      "status": "ok",
+      "run": 2
+    },
+    {
+      "tracemalloc_peak_bytes": 105346538,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "duckdb",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 7.010545122999247,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 14977.437297355125,
+      "rss_before_bytes": 212029440,
+      "peak_rss_bytes": 478699520,
+      "peak_rss_delta_bytes": 266670080,
+      "status": "ok",
+      "run": 3
+    },
+    {
+      "tracemalloc_peak_bytes": 112342745,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 281.90931779399943,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 372.4601968521204,
+      "rss_before_bytes": 189440000,
+      "peak_rss_bytes": 469409792,
+      "peak_rss_delta_bytes": 279969792,
+      "status": "ok",
+      "run": 1
+    },
+    {
+      "tracemalloc_peak_bytes": 105807349,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 272.863761917999,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 384.80741913818,
+      "rss_before_bytes": 189513728,
+      "peak_rss_bytes": 453525504,
+      "peak_rss_delta_bytes": 264011776,
+      "status": "ok",
+      "run": 2
+    },
+    {
+      "tracemalloc_peak_bytes": 105813133,
+      "arrow_pool_max_bytes": 128,
+      "arrow_pool_backend": "mimalloc",
+      "target": "postgres",
+      "loader": "dbt_seed",
+      "family": "seed",
+      "input": "csv",
+      "size": "100k",
+      "mode": "memory",
+      "wall_s": 273.2953938489991,
+      "rows": 105000,
+      "row_counts": {
+        "raw_customers": 5000,
+        "raw_orders": 100000
+      },
+      "rows_per_s": 384.19966952686553,
+      "rss_before_bytes": 189501440,
+      "peak_rss_bytes": 453898240,
+      "peak_rss_delta_bytes": 264396800,
+      "status": "ok",
+      "run": 3
+    }
+  ],
+  "summary": {
+    "duckdb": {
+      "runs": 3,
+      "tracemalloc_peak_mib_median": 100.46628761291504,
+      "peak_rss_mib_median": 463.9375,
+      "peak_rss_delta_mib_median": 261.6328125,
+      "rss_before_mib_median": 202.20703125,
+      "wall_s_under_tracemalloc_median": 7.010545122999247
+    },
+    "postgres": {
+      "runs": 3,
+      "tracemalloc_peak_mib_median": 100.91126728057861,
+      "peak_rss_mib_median": 432.87109375,
+      "peak_rss_delta_mib_median": 252.1484375,
+      "rss_before_mib_median": 180.72265625,
+      "wall_s_under_tracemalloc_median": 273.2953938489991
+    }
+  },
+  "finished": "2026-11-10T12:45:09+04:00"
+}
