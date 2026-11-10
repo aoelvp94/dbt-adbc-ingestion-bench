@@ -1,0 +1,23 @@
+# Local-only profiles. No cloud credentials anywhere in this repo.
+shop:
+  target: duckdb
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCKDB_PATH', '../work/dbt.duckdb') }}"
+      schema: analytics
+      threads: 4
+    postgres:
+      type: postgres
+      host: "{{ env_var('PG_HOST', '127.0.0.1') }}"
+      port: "{{ env_var('PG_PORT', '55432') | int }}"
+      user: "{{ env_var('PG_USER', 'bench') }}"
+      password: "{{ env_var('PG_PASSWORD', 'bench') }}"
+      dbname: "{{ env_var('PG_DB', 'bench') }}"
+      schema: analytics
+      threads: 4
+    # Snowflake is documented in README but never run by this repo.
+    # snowflake:
+    #   type: snowflake
+    #   account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+    #   ...

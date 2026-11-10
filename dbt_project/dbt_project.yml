@@ -1,0 +1,40 @@
+name: shop
+version: "1.0.0"
+config-version: 2
+profile: shop
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+models:
+  shop:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+
+# Seeds exist only for the `dbt_seed` load path. bench/loaders.py symlinks the
+# generated CSVs here right before `dbt seed` and removes them afterwards.
+# column_types pins the same types every other loader uses (bench/config.py),
+# so dbt sees identical sources whichever path loaded them.
+seeds:
+  shop:
+    +schema: raw
+    raw_customers:
+      +column_types:
+        customer_id: bigint
+        full_name: text
+        email: text
+        country: text
+        signup_date: date
+    raw_orders:
+      +column_types:
+        order_id: bigint
+        customer_id: bigint
+        order_ts: timestamp
+        status: text
+        amount_cents: bigint
+        is_gift: boolean
+        coupon_code: text

@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: One row per customer with lifetime order stats.
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+      - name: order_count
+        data_tests: [not_null]
+  - name: fct_daily_revenue
+    description: One row per calendar day of 2024.
+    columns:
+      - name: order_date
+        data_tests: [unique, not_null]
+  - name: fct_country_status
+    description: Orders and gross revenue by country and status.
