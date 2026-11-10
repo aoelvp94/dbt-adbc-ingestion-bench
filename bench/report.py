@@ -30,7 +30,8 @@ def aggregate(doc: dict) -> list[dict]:
         meta = doc["loaders"][f"{target}/{loader}"]
         timed = [r for r in rs if r.get("round") != "memory" and r["status"] == "ok"]
         mem = next((r for r in rs if r.get("round") == "memory" and r["status"] == "ok"), None)
-        bad = next((r for r in rs if r["status"] not in ("ok",)), None)
+        bad = next((r for r in rs if r.get("round") != "memory" and r["status"] != "ok"), None)
+        mem_bad = next((r for r in rs if r.get("round") == "memory" and r["status"] != "ok"), None)
         row = {"target": target, "size": size, "loader": loader, **meta}
         if timed:
             walls = sorted(r["wall_s"] for r in timed)
@@ -48,8 +49,13 @@ def aggregate(doc: dict) -> list[dict]:
             if bad and bad["status"] == "skipped_projected":
                 row["projected_s"] = bad["projected_s"]
                 row["projected_from"] = bad["projected_from"]
+            if bad and bad.get("note"):
+                row["note"] = bad["note"]
             if bad and bad["status"] == "error":
                 row["error"] = bad.get("stderr_tail", "")[-400:]
+        if mem_bad:
+            row["memory_round"] = mem_bad["status"]
+            row["memory_note"] = mem_bad.get("note")
         if mem:
             row["tracemalloc_peak_mib"] = mem["tracemalloc_peak_bytes"] / MiB
             row["arrow_pool_max_mib"] = mem["arrow_pool_max_bytes"] / MiB
@@ -85,22 +91,28 @@ def table(rows: list[dict], timeout: float) -> list[str]:
         out.append(
             f"| `{r['loader']}` | {r['family']} | {r['input']} | **{_fmt_s(r['median_s'])}** | "
             f"{_fmt_s(r['min_s'])}-{_fmt_s(r['max_s'])} | {_fmt_n(r['rows_per_s'])} | {speed} | "
-            f"{_mib(r['peak_rss_mib'])} (+{_mib(r['peak_rss_delta_mib'])}) | {_mib(r.get('tracemalloc_peak_mib'))} | "
-            f"{_mib(r.get('arrow_pool_max_mib'))} |")
+            f"{_mib(r['peak_rss_mib'])} (+{_mib(r['peak_rss_delta_mib'])}) | "
+            f"{_mib(r.get('tracemalloc_peak_mib')) if 'memory_round' not in r else 'n/a [1]'} | "
+            f"{_mib(r.get('arrow_pool_max_mib')) if 'memory_round' not in r else 'n/a [1]'} |")
     for r in rest:
         if r["status"] == "skipped_projected":
             why = f"skipped: projected {r['projected_s']:.0f} s from {r['projected_from']} > {timeout:.0f} s timeout"
         elif r["status"] == "timeout":
             why = f"timeout (> {timeout:.0f} s)"
+        elif r["status"] == "skipped_by_decision":
+            why = f"skipped: {r.get('note', 'out of scope')}"
         elif r["status"] == "skipped_after_timeout":
             why = "skipped (timed out at a smaller size)"
         else:
             why = r["status"]
         out.append(f"| `{r['loader']}` | {r['family']} | {r['input']} | {why} | | | | | | |")
+    notes = [r for r in rows if r.get("memory_round")]
+    for r in notes:
+        out += ["", f"[1] `{r['loader']}`: memory round {r['memory_round']}. {r.get('memory_note') or ''}".rstrip()]
     return out
 
 
-def render(doc: dict, verify: dict | None) -> tuple[str, dict]:
+def render(doc: dict, verify: dict | None, seed_mem: dict | None = None) -> tuple[str, dict]:
     rows = aggregate(doc)
     env = doc["env_before"]
     timeout = doc["config"]["timeout"]
@@ -130,6 +142,17 @@ def render(doc: dict, verify: dict | None) -> tuple[str, dict]:
             lines += [f"## {target} - {size} orders" + (f" ({n:,} rows total)" if n else ""), ""]
             lines += table(sub, timeout)
             lines.append("")
+    if seed_mem:
+        lines += ["## dbt seed memory", "",
+                  f"Separate run (`python -m bench.seed_memory`), size {seed_mem['size']}, "
+                  "median of the runs below. All under tracemalloc, so RSS here includes tracemalloc's own "
+                  "bookkeeping and is higher than in the timed tables; wall time is NOT a timing result.", "",
+                  "| Target | Runs | Py heap peak MiB | Peak RSS MiB (under tracemalloc) | RSS growth MiB | Wall s (instrumented) |",
+                  "| --- | ---: | ---: | ---: | ---: | ---: |"]
+        for t, s_ in seed_mem["summary"].items():
+            lines.append(f"| {t} | {s_['runs']} | {s_['tracemalloc_peak_mib_median']:.0f} | {s_['peak_rss_mib_median']:.0f} | "
+                         f"{s_['peak_rss_delta_mib_median']:.0f} | {s_['wall_s_under_tracemalloc_median']:.0f} |")
+        lines.append("")
     if verify:
         lines += ["## Same dbt build on every load path", "",
                   f"Size {verify['size']}. Each load path loaded the data, then the same "
@@ -159,11 +182,15 @@ def render(doc: dict, verify: dict | None) -> tuple[str, dict]:
         f"{doc.get('env_after', {}).get('loadavg_1_5_15', 'n/a')}",
         f"* Python {env['python']}; Postgres: {env['postgres']}",
         "* Packages: " + ", ".join(f"{k} {v}" for k, v in pk.items() if v),
-        f"* Repo commit: {env.get('git_commit')}",
-        "",
+        "* Repo commit per run: " + ", ".join(
+            str(e.get("git_commit")) for e in [env] + doc.get("env_later_runs", [])),
     ]
+    if doc.get("note"):
+        lines.append(f"* Note on the first run: {doc['note']}")
+    lines.append("")
     compact = {"started": doc["started"], "finished": doc.get("finished"), "config": doc["config"],
                "env": env, "env_after": doc.get("env_after"), "cells": rows,
+               "seed_memory": seed_mem["summary"] if seed_mem else None,
                "verify": {"size": verify["size"], "summary": verify["summary"],
                           "all_builds_passed": verify["all_builds_passed"]} if verify else None}
     return "\n".join(lines), compact
@@ -175,6 +202,7 @@ def main() -> None:
     ap.add_argument("--verify")
     ap.add_argument("--out", default="results/BENCH.md")
     ap.add_argument("--json")
+    ap.add_argument("--seed-memory")
     args = ap.parse_args()
     docs = [json.loads(Path(b).read_text()) for b in args.bench]
     doc = docs[0]
@@ -189,7 +217,8 @@ def main() -> None:
         doc["env_after"] = extra.get("env_after")
         doc["env_later_runs"] = doc.get("env_later_runs", []) + [extra["env_before"]]
     verify = json.loads(Path(args.verify).read_text()) if args.verify else None
-    md, compact = render(doc, verify)
+    seed_mem = json.loads(Path(args.seed_memory).read_text()) if args.seed_memory else None
+    md, compact = render(doc, verify, seed_mem)
     Path(args.out).write_text(md)
     if args.json:
         Path(args.json).write_text(json.dumps(compact, indent=2) + "\n")
