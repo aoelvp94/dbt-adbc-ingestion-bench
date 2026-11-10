@@ -33,18 +33,26 @@ bench-duckdb sizes="100k,1m" rounds="3":
 
 # Full benchmark (both targets, 100k/1m/10m, 3 rounds). Takes 1-2 hours.
 bench sizes="100k,1m,10m" rounds="3" timeout="600":
-    {{py}} -m bench.run --sizes {{sizes}} --rounds {{rounds}} --timeout {{timeout}} --out results/runs/bench.json
+    {{py}} -m bench.run --sizes {{sizes}} --rounds {{rounds}} --timeout {{timeout}} --skip dbt_seed@10m --out results/runs/bench.json
 
 # Same dbt build on top of every load path; fingerprints must match
 verify size="100k":
     {{py}} -m bench.verify --size {{size}} --out results/runs/verify.json
 
-# Render results/BENCH.md + results/latest.json from the last bench + verify
+# dbt seed memory under tracemalloc (its 1m tracemalloc round is too slow for the main run)
+seed-memory size="100k" runs="3":
+    {{py}} -m bench.seed_memory --size {{size}} --runs {{runs}} --out results/runs/seed-memory.json
+
+# Render results/BENCH.md + results/latest.json from your runs
 report:
-    {{py}} -m bench.report results/runs/bench.json --verify results/runs/verify.json --out results/BENCH.md --json results/latest.json
+    {{py}} -m bench.report results/runs/bench.json --verify results/runs/verify.json --seed-memory results/runs/seed-memory.json --out results/BENCH.md --json results/latest.json
+
+# Re-render the committed snapshot (no database needed)
+report-snapshot:
+    {{py}} -m bench.report results/snapshot-2026-11-10/bench-100k.json results/snapshot-2026-11-10/bench-1m-10m.json --verify results/snapshot-2026-11-10/verify-100k.json --seed-memory results/snapshot-2026-11-10/seed-memory-100k.json --out results/BENCH.md --json results/latest.json
 
 # Everything a reviewer needs, end to end
-reproduce: setup data test bench verify report
+reproduce: setup data test bench seed-memory verify report
 
 # Stop Postgres and delete generated data and DuckDB files
 clean:
